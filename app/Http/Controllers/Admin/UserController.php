@@ -10,7 +10,9 @@ class UserController extends Controller
 {
     public function index()
     {
-        $user = User::first(); //retorna o primeiro usuário cadastrado.
-        return view("admin.users.index", compact("user"));
+        $users = User::paginate(20); // User::all(); //retorna o primeiro usuário cadastrado.
+        //dd($users); //dd() - dump and die: é tipo um "console.log" só que do Laravel.
+
+        return view("admin.users.index", compact("users"));
     }
 }
