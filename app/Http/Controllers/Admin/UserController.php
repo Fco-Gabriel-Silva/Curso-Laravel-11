@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreUserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -21,7 +22,7 @@ class UserController extends Controller
         return view("admin.users.create");
     }
 
-    public function store(Request $request)
+    public function store(StoreUserRequest $request)
     {
         // "Request $request" é a mesma coisa que: "$request = new Request();"
 
@@ -40,6 +41,8 @@ class UserController extends Controller
 
         User::create($request->all());
 
-        return redirect()->route("users.index");
+        return redirect()
+            ->route("users.index")
+            ->with("success", "Usuário criado com sucesso!"); // ->with('chave', 'valor') - É uma informação temporária armazenada na sessão do usuário que só dura até a próxima requisição.
     }
 }

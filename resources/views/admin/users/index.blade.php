@@ -6,6 +6,11 @@
 
 <a href="{{ route('users.create') }} ">Novo</a>
 
+<!-- verifica se existem sessões com a key "success" -->
+@if (session()->has('success'))
+{{ session('success') }}
+@endif
+
 <table>
     <thead>
         <tr>
