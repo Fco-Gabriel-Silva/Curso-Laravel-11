@@ -4,14 +4,9 @@
 @section('content')
 <h1>Novo Usuário</h1>
 
-<!-- verifica se existem erros -->
-@if ($errors->any())
-<ul>
-    @foreach ($errors->all() as $error)
-    <li>{{ $error }}</li>
-    @endforeach
-</ul>
-@endif
+<!-- Formas de renderizar o componente: -->
+{{-- @include('admin.includes.errors') --}}
+<x-alert />
 
 <form action="{{ route('users.store') }}" method="post">
     <!-- @csrf() -> token para validação de sessão -->
