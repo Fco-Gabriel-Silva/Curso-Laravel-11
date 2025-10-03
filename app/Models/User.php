@@ -20,7 +20,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-    ];
+    ]; // passa os campos que serão persistidos no banco de dados, se houver campos adicionais além desses, eles não serão persistidos.
 
     /**
      * The attributes that should be hidden for serialization.
