@@ -11,10 +11,12 @@ class UserController extends Controller
 {
     public function index()
     {
-        $users = User::paginate(20); // User::all(); //retorna o primeiro usuário cadastrado.
-        //dd($users); //dd() - dump and die: é tipo um "console.log" só que do Laravel.
+        // $users = User::all(); (ou User::get();) // retorna todos os usuários cadastrados.
+        // $users = User::first(); // retorna o primeiro usuário cadastrado.
+        $users = User::paginate(20); // retornar todos os usuários, porém separados por paginação.
+        //dd($users); //dd() - dump and die: é tipo um "console.log" só que do Laravel..
 
-        return view("admin.users.index", compact("users"));
+        return view("admin.users.index", compact("users")); // compact() - cria um array associativo. Ex: return view("admin.users.index", ["users" => $users]);
     }
 
     public function create()
@@ -44,5 +46,32 @@ class UserController extends Controller
         return redirect()
             ->route("users.index")
             ->with("success", "Usuário criado com sucesso!"); // ->with('chave', 'valor') - É uma informação temporária armazenada na sessão do usuário que só dura até a próxima requisição.
+    }
+
+    public function edit(string $id)
+    {
+        // Formas de recuperar o usuário no bando de dados pelo id:
+        // $user = User::where('id', "=", $id)->first(); // ->get() - retorna uma colletion; ->first() - retorna o primeiro ou NULL;
+        // $user = User::where('id', $id)->first(); // No contexto de APi, usa-se ->firstOrFail(), que retorna o primeiro registro ou retorna o erro 404; Se não passar o critério de comparação, ele já entende que é o "=";
+        if (!$user = User::find($id)) {
+            return redirect()->route('users.index')->with('message', "Usuário não encontrado");
+        }
+
+        return view('admin.users.edit', compact("user"));
+    }
+
+    public function update(Request $request, string $id)
+    {
+        if (!$user = User::find($id)) {
+            return back()->with('message', "Usuário não encontrado");
+        }
+        $user->update($request->only([
+            'name',
+            'email',
+        ]));
+
+        return redirect()
+            ->route("users.index")
+            ->with("success", "Usuário criado com sucesso!");
     }
 }
