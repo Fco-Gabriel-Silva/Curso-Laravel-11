@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreUserRequest extends FormRequest
 {
@@ -31,7 +32,8 @@ class StoreUserRequest extends FormRequest
             'email' => [
                 'required',
                 'email',
-                'unique:users,email', // unique:nome_tabela,coluna_tabela: está dizendo que o email precisa ser unico na tabela users na coluna email.
+                // 'unique:users,email', // unique:nome_tabela,nome_coluna: está dizendo que o email precisa ser unico na tabela users na coluna email.,
+                Rule::unique('users', 'email')->ignore($this->user, 'id')
             ],
             'password' => [
                 'required',

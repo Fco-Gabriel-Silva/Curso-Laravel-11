@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
+use Illuminate\Auth\Events\Validated;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -40,8 +42,9 @@ class UserController extends Controller
         // dd($request->only("name", "email")); // pega apenas os campos "name" e "email" (OBS: ele pega mais de um campo).
         // dd($request->except("_token")); // pega todos os campos exceto "_token" (OBS: ele pega mais de um campo).
         // dd(User::create($request->all())); // persiste os dados do formulário no banco de dados.
+        // dd($request->validated()); // Pega apenas os campos que passaram pela validação *MAIS SEGURO*
 
-        User::create($request->all());
+        User::create($request->validated());
 
         return redirect()
             ->route("users.index")
@@ -60,15 +63,19 @@ class UserController extends Controller
         return view('admin.users.edit', compact("user"));
     }
 
-    public function update(Request $request, string $id)
+    public function update(UpdateUserRequest $request, string $id)
     {
         if (!$user = User::find($id)) {
             return back()->with('message', "Usuário não encontrado");
         }
-        $user->update($request->only([
-            'name',
-            'email',
-        ]));
+
+        $data = $request->only('name', 'email');
+
+        if ($request->password) {
+            $data['password'] = bcrypt($request->password); //bcrypt() - Salva a senha criptografada com hash seguro
+        }
+
+        $user->update($data);
 
         return redirect()
             ->route("users.index")
